@@ -1,0 +1,50 @@
+function [wayPoints, isPath] = plan(pose,goal,mapMatrix)
+
+
+coder.extrinsic('helperPlotPathMobileArm');
+
+ss = stateSpaceDubins; 
+
+%Crea un mapa ocupacional basado en estados usando los state space.
+binaryMap = binaryOccupancyMap(mapMatrix,10);
+sv = validatorOccupancyMap(ss,"Map",binaryMap);
+startPose = pose;
+endPose = goal;
+isPath = false;
+
+% Comprobar si la pose inicial es lo suficientemente cerca a la goal pose
+orientationDif = abs(angdiff(startPose(3), endPose(3)));
+positionDif = norm(startPose(1:2)-endPose(1:2)); 
+
+if orientationDif<=0.1 && positionDif<=0.1
+    wayPoints = startPose;
+    isPath = true;
+    helperPlotPathMobileArm(startPose,wayPoints, mapMatrix)
+    return;
+end
+
+
+
+%VALIDATION_DISTANCE
+sv.ValidationDistance = 0.05;%0.01
+ss.StateBounds = [binaryMap.XWorldLimits;binaryMap.YWorldLimits; [-pi pi]];
+ss.MinTurningRadius = 3;%1.5;
+planner = plannerRRTStar(ss,sv);
+planner.MaxConnectionDistance = 0.2; 
+planner.MaxNumTreeNodes = 100000;
+
+%Estados de inicio y final
+planner.MaxIterations = 100000;
+planner.GoalBias = 0.5;
+
+disp('Planning path')
+
+rng(1); % Para un resultado repetitible
+[pthObj,solnInfo] = plan(planner,startPose,endPose);
+isPath = solnInfo.IsPathFound;
+%Visualiza el resultado.
+if isPath
+    interpolate(pthObj, pthObj.NumStates * 2);
+end
+wayPoints = [pthObj.States;endPose]; 
+helperPlotPathMobileArm(startPose,wayPoints, mapMatrix)

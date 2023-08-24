@@ -1,0 +1,26 @@
+function [vL, vR] = velocidadRuedas(v, omega, waypoints, pose)
+
+% Constantes a la que el robot disminuira la velocidad y parará
+limiteStop = 0.1;
+limiteSlow = 0.3;
+
+% Parámetros del robot
+anchoVia = 1.05;
+radioRueda = 0.5/2;
+
+% Slow the robot down when it's near the threshold
+diatanciaToPuntofinal = norm(waypoints(end, :) - pose(1:2)');
+if (diatanciaToPuntofinal < limiteSlow)
+    v = diatanciaToPuntofinal/limiteSlow*v;
+    
+    % Stop the robot if it's inside the target threshold
+    if diatanciaToPuntofinal < limiteStop
+        v = 0;
+    end
+end
+
+% Convert velocity and heading angular velocity to wheel speeds
+vL = (v - anchoVia/2*omega)/radioRueda;
+vR = (v + anchoVia/2*omega)/radioRueda;
+
+end

@@ -1,0 +1,33 @@
+JPO=simplify([J1 J2 J3 J4 J5 J6])
+onesJPO=1
+Tga=[cos(phi) -sin(phi) 0 Xa; sin(phi) cos(phi) 0 Ya; 0 0 1 0; 0 0 0 1]
+
+JPOv1=[JPO(1:3,1); onesJPO]
+JPOv2=[JPO(1:3,2); onesJPO]
+JPOv3=[JPO(1:3,3); onesJPO]
+JPOv4=[JPO(1:3,4); onesJPO]
+JPOv5=[JPO(1:3,5); onesJPO]
+JPOv6=[JPO(1:3,6); onesJPO]
+
+JPOv1n=mtimes(JPOv1,Tga)
+JPOv2n=mtimes(JPOv2,Tga)
+JPOv3n=mtimes(JPOv3,Tga)
+JPOv4n=mtimes(JPOv4,Tga)
+JPOv5n=mtimes(JPOv5,Tga)
+JPOv6n=mtimes(JPOv6,Tga)
+
+JPOw1=[JPO(4:6,1); onesJPO]
+JPOw2=[JPO(4:6,2); onesJPO]
+JPOw3=[JPO(4:6,3); onesJPO]
+JPOw4=[JPO(4:6,4); onesJPO]
+JPOw5=[JPO(4:6,5); onesJPO]
+JPOw6=[JPO(4:6,6); onesJPO]
+
+JPOw1n=mtimes(JPOw1,Tga)
+JPOw2n=mtimes(JPOw2,Tga)
+JPOw3n=mtimes(JPOw3,Tga)
+JPOw4n=mtimes(JPOw4,Tga)
+JPOw5n=mtimes(JPOw5,Tga)
+JPOw6n=mtimes(JPOw6,Tga)
+
+JPOV=[JPOv1n JPOv2n JPOv3n JPOv4n JPOv5n JPOv6n]
